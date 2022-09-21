@@ -1,20 +1,17 @@
 import sharp from 'sharp';
 
-// params to resize
-interface resizeParams {
-  src: string;
-  target: string;
-  width: number;
-  height: number;
-}
-
+import { resizeParams } from './image_parameters'
 
 const resizeingImage = async (
   params: resizeParams
 ): Promise<null | string> => {
   try {
     await sharp(params.src)
-      .resize(params.width, params.height)
+      .resize({
+        width: params.width,
+        height: params.height,
+        fit: sharp.fit.cover
+      })
       .toFormat('jpeg')
       .toFile(params.target);
     return null;

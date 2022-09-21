@@ -1,6 +1,7 @@
 import express from 'express';
 import routes from './routes/index';
 import File from './file';
+import path from 'path';
 
 const app: express.Application = express();
 const port: number = 3000; // Default port
@@ -8,13 +9,10 @@ const port: number = 3000; // Default port
 // Add routes
 app.use(routes);
 
-// Start server
-app.listen(port, async (): Promise<void> => {
-  
-  // Make sure that thumb path is available
-  await File.createThumbPath();
+app.set('views', path.join(__dirname, './views'));
+app.set('view engine', 'ejs');
 
-
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
 });
-
 export default app;
