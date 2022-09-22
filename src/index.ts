@@ -1,10 +1,10 @@
 import express from 'express';
 import routes from './routes/index';
-import File from './file';
+// import File from './file';
 import path from 'path';
 
 const app: express.Application = express();
-const port: number = 3000; // Default port
+const port = 3000; // Default port
 
 // Add routes
 app.use(routes);

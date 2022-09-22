@@ -3,16 +3,12 @@ import path from 'path';
 import resizeingImage from './resizing-image';
 import { ImageParameter } from './image_parameters';
 
-
-
 class File {
+  // paths of full images and thumb
+  static imageFullPath = path.resolve(__dirname, '../assets/images/full');
+  static resizeThumbPath = path.resolve(__dirname, '../assets/images/thumb');
 
-    // paths of full images and thumb
-    static imageFullPath = path.resolve(__dirname, '../assets/images/full');
-    static resizeThumbPath = path.resolve(__dirname, '../assets/images/thumb');
-
-
-//get the path
+  //get the path
   static async getFilePath(params: ImageParameter): Promise<null | string> {
     if (!params.filename) {
       return null;
@@ -20,16 +16,14 @@ class File {
 
     // make image path
     let filePath: string;
-    if( params.width && params.height){
-      filePath =   path.resolve(
+    if (params.width && params.height) {
+      filePath = path.resolve(
         File.resizeThumbPath,
         `${params.filename}-${params.width}x${params.height}.jpg`
       );
-    }else{
+    } else {
       filePath = path.resolve(File.imageFullPath, `${params.filename}.jpg`);
     }
-   
-
 
     // Check if image exists
     try {
@@ -41,7 +35,7 @@ class File {
   }
 
   //set thumb path.
-  
+
   static async createThumbPath(): Promise<void> {
     try {
       await fs.access(File.resizeThumbPath);
@@ -50,7 +44,6 @@ class File {
       fs.mkdir(File.resizeThumbPath);
     }
   }
-
 
   static async createThumb(params: ImageParameter): Promise<null | string> {
     if (!params.filename || !params.width || !params.height) {
@@ -73,7 +66,7 @@ class File {
       src: filePathFull,
       target: filePathThumb,
       width: parseInt(params.width),
-      height: parseInt(params.height)
+      height: parseInt(params.height),
     });
   }
 }
