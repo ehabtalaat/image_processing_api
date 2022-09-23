@@ -8,9 +8,7 @@ const resizeingImage = async (params: resizeParams): Promise<null | string> => {
       .resize({
         width: params.width,
         height: params.height,
-        fit: sharp.fit.cover,
       })
-      .toFormat('jpeg')
       .toFile(params.target);
     return null;
   } catch {

@@ -1,9 +1,8 @@
 import express from 'express';
-// import { ImageParameter } from '../../image_parameters';
-import FilePath from '../../file-path';
-import CheckFile from '../../checkfile';
-import CreateFile from '../../create-file';
 import validatation from '../validatation';
+import path from 'path';
+import resizeingImage from '../../resizing-image';
+import fs from 'fs';
 
 const processingImage: express.Router = express.Router();
 
@@ -22,24 +21,63 @@ processingImage.get(
 
     let error: null | string = '';
 
-    // Create thumb if not yet available
-    if (!(await CheckFile.isThumbExist(request.query))) {
-      error = await CreateFile.create(request.query);
+    //pathes
+    const filePathThumb = path.resolve(
+      `assets/images/thumb/${request.query.filename}-${request.query.width}x${request.query.height}.jpg`
+    );
+    const filePathFull = path.resolve(
+      `assets/images/full/${request.query.filename}.jpg`
+    );
+
+    //names pf existed images 
+    const imagesFilenames: string[] = fs
+      .readdirSync(path.resolve('assets/images/full'))
+      .map((filename) => filename.split('.')[0]);
+
+    if (imagesFilenames.indexOf(request.query.filename as string) < 0) {
+      return response.render('error', { message: 'sorry file was not found' });
     }
+
+    //check width and height and file name
+    if (
+      !request.query.width ||
+      !request.query.height ||
+      !request.query.filename
+    ) {
+      error = null;
+    } else {
+
+      error = await resizeingImage({
+        src: filePathFull,
+        target: filePathThumb,
+        width: parseInt(request.query.width as string),
+        height: parseInt(request.query.height as string),
+      });
+    }
+    //}
 
     // Handle image processing error
     if (error) {
       response.send(error);
-      return;
     }
 
-    // get image path and show the image
-    const path: null | string = await FilePath.get(request.query);
+    let new_path: null | string;
 
-    if (path) {
-      response.sendFile(path);
+    if (request.query.width != null && request.query.height != null) {
+      new_path = path.resolve(
+        `assets/images/thumb/${request.query.filename}-${request.query.width}x${request.query.height}.jpg`
+      );
     } else {
-      return response.render('error', { message: 'unexpected error' });
+      new_path = path.resolve(
+        `assets/images/full/${request.query.filename}.jpg`
+      );
+    }
+    // get image path and show the image
+
+    if (new_path) {
+      response.sendFile(new_path);
+    } else {
+      return response.render('error', { message: 'sorry unexpected error happened' });
     }
   }
 );

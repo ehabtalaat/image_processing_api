@@ -1,7 +1,5 @@
 import express from 'express';
 import processingimage from './api/processing-image';
-// import CheckFile from './../check-file';
-// import File from './../file';
 
 const routes: express.Router = express.Router();
 
