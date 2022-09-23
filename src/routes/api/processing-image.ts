@@ -1,8 +1,8 @@
 import express from 'express';
-import File from '../../file';
 // import { ImageParameter } from '../../image_parameters';
+import FilePath from '../../file-path';
 import CheckFile from '../../checkfile';
-
+import CreateFile from '../../create-file';
 import validatation from '../validatation';
 
 const processingImage: express.Router = express.Router();
@@ -24,7 +24,7 @@ processingImage.get(
 
     // Create thumb if not yet available
     if (!(await CheckFile.isThumbExist(request.query))) {
-      error = await File.createThumb(request.query);
+      error = await CreateFile.create(request.query);
     }
 
     // Handle image processing error
@@ -34,7 +34,8 @@ processingImage.get(
     }
 
     // get image path and show the image
-    const path: null | string = await File.getFilePath(request.query);
+    const path: null | string = await FilePath.get(request.query);
+
     if (path) {
       response.sendFile(path);
     } else {

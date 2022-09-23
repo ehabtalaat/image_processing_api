@@ -10,7 +10,7 @@ routes.use('/api/processing-image', processingimage);
 routes.get(
   '/',
   (request: express.Request, response: express.Response): void => {
-    response.render('index');
+    response.render('main');
   }
 );
 

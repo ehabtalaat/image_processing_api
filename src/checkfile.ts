@@ -4,13 +4,13 @@ import { ImageParameter } from './image_parameters';
 
 class CheckFile {
   // paths of full images and thumb
-  static imageFullPath = path.resolve(__dirname, '../assets/images/full');
+  static FullPath = path.resolve(__dirname, '../assets/images/full');
   static resizeThumbPath = path.resolve(__dirname, '../assets/images/thumb');
 
   //getExistedImageNames
   static async getExistedImageNames(): Promise<string[]> {
     try {
-      return (await fs.readdir(CheckFile.imageFullPath)).map(
+      return (await fs.readdir(CheckFile.FullPath)).map(
         (filename: string): string => filename.split('.')[0]
       );
     } catch {
